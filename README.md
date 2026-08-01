@@ -1,51 +1,7 @@
-# Sector Debt Maturity & Refinancing Risk Analysis 
+# Debt Maturity and Refinancing Risk Analysis (DMRRA)
 
-## Overview
+DMRRA is a quantitative framework that models how rising interest rates and credit spreads deteriorate sector-level credit quality through 2026–2029. The pipeline ingests 94 industry-level financial data from Damodaran (NYU Stern), aggregates into 8 core sectors, constructs synthetic credit ratings via interest coverage bands, and executes a 23-formula stress model that applies iterative rate shocks (200–500 bp), spread shocks (100–250 bp), and EBITDA shocks (−5% to −20%) to estimate rating migration, fallen-angel risk, and refinancing burden.
 
-Sector Debt Maturity & Refinancing Risk Analysis is a financial risk assessment project that evaluates how future refinancing conditions may affect sector-level credit quality.
-The project combines publicly available macroeconomic data, corporate debt maturity schedules, and sector financial characteristics to estimate how refinancing costs propagate through:
-interest expense, interest coverage ratios, and synthetic credit ratings under user-defined stress scenarios.
+**Quick Start**: Install dependencies (`pip install -r requirements.txt`), execute the three notebooks in sequence (`notebooks/01_build_sector_master.ipynb` → `02_build_credit_model.ipynb` → `03_run_stress_model.ipynb`) to generate sector master, credit profiles, and stress outputs in `data/processed/`, then launch the interactive dashboard (`streamlit run dashboard/dashboard.py`) for real-time scenario analysis. Key outputs include `sector_stress_model.csv` (32 sector-year observations, 46 metrics), `sector_credit_profile.csv` (ratings + ICR bands), and `dashboard_input.csv` (visualization dataset). Validation suite: `python tests/test_stress_model.py`.
 
-The repository contains the complete analytical pipeline, including raw data processing, intermediate datasets, stress calculations, and an interactive dashboard.
-
----
-
-## Business Problem
-
-Large volumes of corporate debt mature over the coming years.
-When interest rates or credit spreads increase, refinancing becomes more expensive.
-Higher refinancing costs increase interest expense.
-Higher interest expense reduces interest coverage.
-Lower interest coverage may result in deterioration of credit quality.
-
-This project estimates those effects at the sector level using publicly available data.
-
----
-
-## Project Scope
-
-The repository contains:
-
-- Data ingestion
-- Data validation
-- Sector aggregation
-- Credit profile construction
-- Refinancing exposure estimation
-- Stress testing
-- Rating migration estimation
-- Interactive dashboard
-
----
-
-## Data Sources
-
-Primary public sources include:
-
-- Professor Aswath Damodaran (Stern School of Business, New York University)
-- S&P Global Investor Fact Book
-
----
-
-## License
-
-License will be added during the final documentation phase.
+**Architecture**: Modular Python pipeline (`src/preprocessing.py` → `sector_model.py` → `credit_model.py` → `stress_model.py` → `validation.py`) processes raw data through three tiers (94 industries → 8 sectors → 32 stress observations), preserving all 23 intermediate calculation variables for auditability. Dashboard provides six-tab interface: Overview (key metrics, notch heatmap), ICR Analysis (baseline vs stressed coverage), Refinancing Exposure (debt maturing, cumulative burden), Rating Migration (transition matrix, fallen angels), Sector Detail (per-sector trajectories), and Full Data (CSV export). Licensed under MIT.
